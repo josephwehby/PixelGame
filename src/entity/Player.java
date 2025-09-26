@@ -3,6 +3,8 @@ package entity;
 import java.awt.*;
 import game.KeyHandler;
 import java.awt.image.BufferedImage;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 
 public class Player extends Entity {
   private KeyHandler key_handler;
@@ -22,19 +24,39 @@ public class Player extends Entity {
   public void update() {
     if (key_handler.key_up) {
       y -= speed;
-      current_dir = 1;
+      if (current_dir != 1) {
+        current_frame = 0;
+        current_dir = 1;
+      } else {
+        current_frame = (current_frame+1)%4;
+      }
     }
     if (key_handler.key_down) {
       y += speed;
-      current_dir = 0;
+      if (current_dir != 0) {
+        current_frame = 0;
+        current_dir = 0;
+      } else {
+        current_frame = (current_frame+1)%4;
+      }
     }
     if (key_handler.key_left) {
       x -= speed;
-      current_dir = 3;
+      if (current_dir != 3) {
+        current_frame = 0;
+        current_dir = 3;
+      } else {
+        current_frame = (current_frame+1)%4;
+      }
     }
     if (key_handler.key_right){
       x += speed;
-      current_dir = 2;
+      if (current_dir != 2) {
+        current_frame = 0;
+        current_dir = 2;
+      } else {
+        current_frame = (current_frame+1)%4;
+      }
     }
   }
 
@@ -47,12 +69,26 @@ public class Player extends Entity {
   protected void parseSheet() {
     for (int r = 0; r < row; r++) {
       for (int c = 0; c < col; c++) {
-        frames[r][c] = sprite_sheet.getSubimage(
+        // scale the image
+        BufferedImage sub = sprite_sheet.getSubimage(
           c*frame_size,
           r*frame_size,
           frame_size,
           frame_size
         );
+
+        BufferedImage scaled = new BufferedImage(
+          sub.getWidth()*scale, 
+          sub.getHeight()*scale, 
+          BufferedImage.TYPE_INT_ARGB
+        );
+        AffineTransform at = new AffineTransform();
+        at.scale(scale, scale);
+        AffineTransformOp scaleop = new AffineTransformOp(
+          at, 
+          AffineTransformOp.TYPE_BILINEAR
+        );
+        frames[r][c] = scaleop.filter(sub, scaled);
       }
     }
   }

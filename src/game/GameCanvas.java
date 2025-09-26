@@ -2,6 +2,7 @@ package game;
 
 import entity.Entity;
 import entity.Player;
+import gamemap.GameMap;
 
 import javax.swing.JFrame;
 import java.awt.*;
@@ -20,14 +21,15 @@ public class GameCanvas {
 
   private Canvas canvas;
   private BufferStrategy bs;
-
+  private GameMap map;
   KeyHandler key_handler = new KeyHandler();
   private Player player;
 
-  int fps = 60;
+  int fps = 30;
 
   public GameCanvas() {
     JFrame frame = new JFrame("Game");
+    map = new GameMap(max_screen_row, max_screen_col);
     canvas = new Canvas();
     canvas.setSize(screen_width, screen_height);
     canvas.addKeyListener(key_handler);
@@ -42,7 +44,7 @@ public class GameCanvas {
     canvas.createBufferStrategy(2);
     bs = canvas.getBufferStrategy();
 
-    player = new Player(100,100,4,"assets/player.png",key_handler);
+    player = new Player(100,100,5,"assets/player.png",key_handler);
   }
 
   public void gameLoop() {
@@ -79,6 +81,7 @@ public class GameCanvas {
     g2.setColor(Color.WHITE);
     g2.fillRect(0,0,screen_width,screen_height);
 
+    map.draw(g2);
     player.draw(g2);
 
     g2.dispose();

@@ -12,7 +12,7 @@ public abstract class Entity {
   protected int speed;
   protected int current_dir = 0;
   protected int current_frame = 0;
-  protected int scale = 3;
+  protected int scale = 4;
   protected BufferedImage sprite_sheet;
 
   public Entity(int x, int y, int speed, String sprite_path) {
