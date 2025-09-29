@@ -11,58 +11,70 @@ public class Player extends Entity {
   private int row = 4;
   private int col = 4;
   private int frame_size = 16;
+  private int scale = 4;
+  private int frame_counter = 0;
+  private int frame_delay = 8;
+  public int screenX;
+  public int screenY;
 
   private BufferedImage[][] frames = new BufferedImage[row][col];
 
-  public Player(int x, int y, int speed, String sprite, KeyHandler keys) {
+  public Player(int x, int y, int speed, int width, int height, String sprite, KeyHandler keys) {
     super(x,y,speed,sprite);
     key_handler = keys;
+    screenX = width/2 - (frame_size*scale)/2;
+    screenY = height/2 - (frame_size*scale)/2;
     parseSheet();
   }
 
   @Override
   public void update() {
+    boolean moving = false;
     if (key_handler.key_up) {
-      y -= speed;
+      worldY -= speed;
       if (current_dir != 1) {
         current_frame = 0;
         current_dir = 1;
-      } else {
-        current_frame = (current_frame+1)%4;
-      }
+      }     
+      moving = true;
     }
     if (key_handler.key_down) {
-      y += speed;
+      worldY += speed;
       if (current_dir != 0) {
         current_frame = 0;
         current_dir = 0;
-      } else {
-        current_frame = (current_frame+1)%4;
-      }
+      } moving = true;
     }
     if (key_handler.key_left) {
-      x -= speed;
+      worldX -= speed;
       if (current_dir != 3) {
         current_frame = 0;
         current_dir = 3;
-      } else {
-        current_frame = (current_frame+1)%4;
-      }
+      } moving = true;
     }
     if (key_handler.key_right){
-      x += speed;
+      worldX += speed;
       if (current_dir != 2) {
         current_frame = 0;
         current_dir = 2;
-      } else {
+      } moving = true;
+    }
+
+    if (moving) {
+      frame_counter++;
+      if (frame_counter >= frame_delay) {
         current_frame = (current_frame+1)%4;
+        frame_counter = 0;
       }
+    } else {
+      current_frame = 0;
+      frame_counter = 0;
     }
   }
 
   @Override
   public void draw(Graphics2D g2) {
-    g2.drawImage(frames[current_dir][current_frame],x,y,null);
+    g2.drawImage(frames[current_dir][current_frame],screenX,screenY,null);
   }
 
   @Override
@@ -92,4 +104,9 @@ public class Player extends Entity {
       }
     }
   }
+
+  public int getX() { return worldX; }
+  public int getY() { return worldY; }
+  public int getScreenX() { return screenX; }
+  public int getScreenY() { return screenY; }
 }

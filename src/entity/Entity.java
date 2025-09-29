@@ -7,8 +7,8 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public abstract class Entity {
-  protected int x;
-  protected int y;
+  protected int worldX;
+  protected int worldY;
   protected int speed;
   protected int current_dir = 0;
   protected int current_frame = 0;
@@ -16,8 +16,8 @@ public abstract class Entity {
   protected BufferedImage sprite_sheet;
 
   public Entity(int x, int y, int speed, String sprite_path) {
-    this.x = x;
-    this.y = y;
+    this.worldX = x;
+    this.worldY = y;
     this.speed = speed;
     try {
       this.sprite_sheet = ImageIO.read(new File(sprite_path));

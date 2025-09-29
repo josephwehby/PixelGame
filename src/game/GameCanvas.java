@@ -44,7 +44,7 @@ public class GameCanvas {
     canvas.createBufferStrategy(2);
     bs = canvas.getBufferStrategy();
 
-    player = new Player(100,100,5,"assets/player.png",key_handler);
+    player = new Player(20*tile_size,21*tile_size,5,screen_width,screen_height,"assets/player.png",key_handler);
   }
 
   public void gameLoop() {
@@ -78,10 +78,10 @@ public class GameCanvas {
     Graphics g = bs.getDrawGraphics();
     Graphics2D g2 = (Graphics2D)g;
 
-    g2.setColor(Color.WHITE);
+    g2.setColor(Color.BLACK);
     g2.fillRect(0,0,screen_width,screen_height);
 
-    map.draw(g2);
+    map.draw(g2, player);
     player.draw(g2);
 
     g2.dispose();

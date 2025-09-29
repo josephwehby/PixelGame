@@ -1,5 +1,6 @@
 package gamemap;
 
+import entity.Player;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
@@ -18,9 +19,16 @@ public class GameMap {
   private int cols;
   private int sprite_rows = 8;
   private int sprite_cols = 20;
+  private int maxWorldRow = 50;
+  private int maxWorldCol = 50;
 
   private int scale = 4;
   private int frame_size = 16;
+  private int tile_size = scale*frame_size;
+
+  private int worldWidth = tile_size*maxWorldCol;
+  private int worldHeight = tile_size*maxWorldRow;
+  private int screenWidth, screenHeight;
 
   private BufferedImage sprite_sheet;
   private BufferedImage[][] frames;
@@ -29,8 +37,11 @@ public class GameMap {
   public GameMap(int rows, int cols) {
     this.rows = rows;
     this.cols = cols;
+    this.screenWidth = this.rows*tile_size;
+    this.screenHeight = this.cols*tile_size; 
+
     frames = new BufferedImage[sprite_rows][sprite_cols];
-    map = new int[rows*cols];
+    map = new int[maxWorldRow*maxWorldCol];
 
     try {
       this.sprite_sheet = ImageIO.read(new File(sprite_path));
@@ -43,14 +54,24 @@ public class GameMap {
     parseSheet();
   }
 
-  public void draw(Graphics2D g2) {
-    for (int r = 0; r < rows; r++) {
-      for (int c = 0; c < cols; c++) {
-        int texture = map[r*cols + c];
+  public void draw(Graphics2D g2, Player player) {
+
+    int startRow = Math.max((player.getY() - player.getScreenY()) / tile_size, 0); 
+    int startCol = Math.max((player.getX() - player.getScreenX()) / tile_size, 0); 
+    int endRow = Math.min(startRow + rows+1, maxWorldRow);
+    int endCol = Math.min(startCol + cols+1, maxWorldCol);
+
+    for (int r = startRow; r < endRow; r++) {
+      for (int c = startCol; c < endCol; c++) {
+
+        int texture = map[r*maxWorldCol + c];
+        int screenX = c * tile_size - player.getX() + player.getScreenX();
+        int screenY = r * tile_size - player.getY() + player.getScreenY();
+
         g2.drawImage(
           frames[texture/sprite_cols][texture%sprite_cols],
-          c*(scale*frame_size),
-          r*(scale*frame_size),
+          screenX,
+          screenY,
           null
         );
       }
@@ -64,8 +85,8 @@ public class GameMap {
     try (Scanner reader = new Scanner(file)) {
       while (reader.hasNextLine()) {
         String[] line = (reader.nextLine()).split(",");
-        for (int c = 0; c < cols; c++) {
-          map[c + r*cols] = Integer.parseInt(line[c]);
+        for (int c = 0; c < maxWorldCol; c++) {
+          map[c + r*maxWorldCol] = Integer.parseInt(line[c]);
         }
         r++;
       }
