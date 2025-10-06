@@ -5,33 +5,41 @@ import game.KeyHandler;
 import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
+import game.CollisionHandler;
 
 public class Player extends Entity {
+
   private KeyHandler key_handler;
   private int row = 4;
   private int col = 4;
-  private int frame_size = 16;
-  private int scale = 4;
   private int frame_counter = 0;
   private int frame_delay = 8;
-  public int screenX;
-  public int screenY;
+  private int screenX;
+  private int screenY;
+  private int width = 0;
+  private int height = 0;
 
   private BufferedImage[][] frames = new BufferedImage[row][col];
 
   public Player(int x, int y, int speed, int width, int height, String sprite, KeyHandler keys) {
     super(x,y,speed,sprite);
     key_handler = keys;
+    this.width = width;
+    this.height = height;
     screenX = width/2 - (frame_size*scale)/2;
     screenY = height/2 - (frame_size*scale)/2;
+    hitBox = new Rectangle(8, 5, 48, 54);
     parseSheet();
   }
 
   @Override
-  public void update() {
+  public void update(CollisionHandler collision) {
+    int nextX = worldX;
+    int nextY = worldY;
     boolean moving = false;
+
     if (key_handler.key_up) {
-      worldY -= speed;
+      nextY -= speed;
       if (current_dir != 1) {
         current_frame = 0;
         current_dir = 1;
@@ -39,25 +47,30 @@ public class Player extends Entity {
       moving = true;
     }
     if (key_handler.key_down) {
-      worldY += speed;
+      nextY += speed;
       if (current_dir != 0) {
         current_frame = 0;
         current_dir = 0;
       } moving = true;
     }
     if (key_handler.key_left) {
-      worldX -= speed;
+      nextX -= speed;
       if (current_dir != 3) {
         current_frame = 0;
         current_dir = 3;
       } moving = true;
     }
     if (key_handler.key_right){
-      worldX += speed;
+      nextX += speed;
       if (current_dir != 2) {
         current_frame = 0;
         current_dir = 2;
       } moving = true;
+    }
+
+    if (!collision.checkCollision(this, nextX, nextY)) {
+      worldX = nextX;
+      worldY = nextY;
     }
 
     if (moving) {
@@ -75,6 +88,8 @@ public class Player extends Entity {
   @Override
   public void draw(Graphics2D g2) {
     g2.drawImage(frames[current_dir][current_frame],screenX,screenY,null);
+    g2.setColor(Color.BLUE);
+    g2.drawRect(screenX + hitBox.x, screenY+hitBox.y, hitBox.width, hitBox.height);
   }
 
   @Override
@@ -105,8 +120,6 @@ public class Player extends Entity {
     }
   }
 
-  public int getX() { return worldX; }
-  public int getY() { return worldY; }
   public int getScreenX() { return screenX; }
   public int getScreenY() { return screenY; }
 }

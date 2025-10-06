@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import game.CollisionHandler;
 
 public abstract class Entity {
   protected int worldX;
@@ -13,7 +14,10 @@ public abstract class Entity {
   protected int current_dir = 0;
   protected int current_frame = 0;
   protected int scale = 4;
+  protected int frame_size = 16;
+  public int tile_size = scale*frame_size;
   protected BufferedImage sprite_sheet;
+  protected Rectangle hitBox;
 
   public Entity(int x, int y, int speed, String sprite_path) {
     this.worldX = x;
@@ -27,7 +31,12 @@ public abstract class Entity {
     }
   }
 
-  public abstract void update();
+  public Rectangle getHitBox() { return hitBox; }
+  public int getX() { return worldX; }
+  public int getY() { return worldY; }
+  public int getDir() { return current_dir; }
+
+  public abstract void update(CollisionHandler collision);
   protected abstract void parseSheet();
   public abstract void draw(Graphics2D g);
 }

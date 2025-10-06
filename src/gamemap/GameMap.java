@@ -1,6 +1,7 @@
 package gamemap;
 
 import entity.Player;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
@@ -19,20 +20,20 @@ public class GameMap {
   private int cols;
   private int sprite_rows = 8;
   private int sprite_cols = 20;
-  private int maxWorldRow = 50;
-  private int maxWorldCol = 50;
+  public int maxWorldRow = 50;
+  public int maxWorldCol = 50;
 
   private int scale = 4;
   private int frame_size = 16;
-  private int tile_size = scale*frame_size;
+  public int tile_size = scale*frame_size;
 
-  private int worldWidth = tile_size*maxWorldCol;
-  private int worldHeight = tile_size*maxWorldRow;
+  public int worldWidth = tile_size*maxWorldCol;
+  public int worldHeight = tile_size*maxWorldRow;
   private int screenWidth, screenHeight;
 
   private BufferedImage sprite_sheet;
   private BufferedImage[][] frames;
-  private int[] map;
+  public int[] map;
 
   public GameMap(int rows, int cols) {
     this.rows = rows;

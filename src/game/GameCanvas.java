@@ -22,6 +22,7 @@ public class GameCanvas {
   private Canvas canvas;
   private BufferStrategy bs;
   private GameMap map;
+  private CollisionHandler collision_handler;
   KeyHandler key_handler = new KeyHandler();
   private Player player;
 
@@ -30,6 +31,7 @@ public class GameCanvas {
   public GameCanvas() {
     JFrame frame = new JFrame("Game");
     map = new GameMap(max_screen_row, max_screen_col);
+    collision_handler = new CollisionHandler(map);
     canvas = new Canvas();
     canvas.setSize(screen_width, screen_height);
     canvas.addKeyListener(key_handler);
@@ -44,7 +46,7 @@ public class GameCanvas {
     canvas.createBufferStrategy(2);
     bs = canvas.getBufferStrategy();
 
-    player = new Player(20*tile_size,21*tile_size,5,screen_width,screen_height,"assets/player.png",key_handler);
+    player = new Player(2*tile_size,2*tile_size,5,screen_width,screen_height,"assets/player.png",key_handler);
   }
 
   public void gameLoop() {
@@ -71,7 +73,7 @@ public class GameCanvas {
   }
 
   private void update() {
-    player.update();
+    player.update(collision_handler);
   }
 
   private void render() {
