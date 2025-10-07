@@ -48,9 +48,6 @@ public class CollisionHandler {
       default:
       break;
     }
-    if (tile1 != 27 || tile2 != 27) {
-      System.out.println("wall");
-    }
-    return (tile1 != 27 || tile2 != 27);
+    return (tile1 != 11 || tile2 != 11);
   }
 }

@@ -1,0 +1,7 @@
+game/GameCanvas.class
+game/Main.class
+gamemap/GameMap.class
+game/KeyHandler.class
+entity/Player.class
+entity/Entity.class
+game/CollisionHandler.class

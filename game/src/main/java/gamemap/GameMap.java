@@ -13,13 +13,13 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class GameMap {
-  private String sprite_path = "assets/landscape.png";
-  private String map_path = "assets/map.txt";
+  private String sprite_path = "landscape.png";
+  private String map_path = "map.txt";
 
   private int rows;
   private int cols;
-  private int sprite_rows = 8;
-  private int sprite_cols = 20;
+  private int sprite_rows = 5;
+  private int sprite_cols = 8;
   public int maxWorldRow = 50;
   public int maxWorldCol = 50;
 
