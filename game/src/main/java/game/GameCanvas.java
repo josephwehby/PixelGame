@@ -46,7 +46,7 @@ public class GameCanvas {
     canvas.createBufferStrategy(2);
     bs = canvas.getBufferStrategy();
 
-    player = new Player(2*tile_size,2*tile_size,5,screen_width,screen_height,"player.png",key_handler);
+    player = new Player(2*tile_size,2*tile_size,5,screen_width,screen_height,"/player.png",key_handler);
   }
 
   public void gameLoop() {

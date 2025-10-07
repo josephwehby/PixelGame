@@ -8,13 +8,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.Scanner;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 
 public class GameMap {
-  private String sprite_path = "landscape.png";
-  private String map_path = "map.txt";
+  private String sprite_path = "/landscape.png";
+  private String map_path = "/map.txt";
 
   private int rows;
   private int cols;
@@ -45,7 +46,7 @@ public class GameMap {
     map = new int[maxWorldRow*maxWorldCol];
 
     try {
-      this.sprite_sheet = ImageIO.read(new File(sprite_path));
+      this.sprite_sheet = ImageIO.read(getClass().getResourceAsStream(sprite_path));
     } catch (IOException e) {
       e.printStackTrace();
       this.sprite_sheet = null;
@@ -80,10 +81,15 @@ public class GameMap {
   }
 
   private void readMap() {
-    File file = new File(map_path);
+    InputStream in = getClass().getResourceAsStream(map_path);
+
+    if (in == null) {
+      System.out.println("here");
+      throw new RuntimeException("Map file not found");
+    }
 
     int r = 0;
-    try (Scanner reader = new Scanner(file)) {
+    try (Scanner reader = new Scanner(in)) {
       while (reader.hasNextLine()) {
         String[] line = (reader.nextLine()).split(",");
         for (int c = 0; c < maxWorldCol; c++) {
@@ -91,8 +97,6 @@ public class GameMap {
         }
         r++;
       }
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
     }
   }
 

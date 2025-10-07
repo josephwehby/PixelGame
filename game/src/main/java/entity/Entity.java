@@ -3,6 +3,7 @@ package entity;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import game.CollisionHandler;
@@ -24,7 +25,7 @@ public abstract class Entity {
     this.worldY = y;
     this.speed = speed;
     try {
-      this.sprite_sheet = ImageIO.read(new File(sprite_path));
+      this.sprite_sheet = ImageIO.read(getClass().getResourceAsStream(sprite_path));
     } catch (IOException e) {
       e.printStackTrace();
       this.sprite_sheet = null;
