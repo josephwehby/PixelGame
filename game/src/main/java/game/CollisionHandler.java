@@ -3,6 +3,7 @@ package game;
 import java.awt.Rectangle;
 import entity.Entity;
 import gamemap.GameMap;
+import gamemap.TileStack;
 
 public class CollisionHandler {
   private GameMap gamemap;
@@ -26,7 +27,7 @@ public class CollisionHandler {
     int topRow = topWorldY / gamemap.tile_size;
     int bottomRow = bottomWorldY / gamemap.tile_size;
 
-    int tile1 = 0, tile2 = 0;
+    TileStack tile1 = null, tile2 = null;
 
     switch(current_dir) {
       case 0:
@@ -48,6 +49,7 @@ public class CollisionHandler {
       default:
       break;
     }
-    return (tile1 != 11 || tile2 != 11);
+
+    return (tile1.isSolid() || tile2.isSolid());
   }
 }

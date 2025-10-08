@@ -9,18 +9,21 @@ import java.awt.image.AffineTransformOp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import com.google.gson.Gson;
 
 public class GameMap {
   private String sprite_path = "/landscape.png";
-  private String map_path = "/map.txt";
+  private String map_path = "/map.json";
 
   private int rows;
   private int cols;
   private int sprite_rows = 5;
   private int sprite_cols = 8;
+
   public int maxWorldRow = 50;
   public int maxWorldCol = 50;
 
@@ -34,16 +37,19 @@ public class GameMap {
 
   private BufferedImage sprite_sheet;
   private BufferedImage[][] frames;
-  public int[] map;
+
+  public MapData mapdata;
+  public TileStack[] map;
 
   public GameMap(int rows, int cols) {
     this.rows = rows;
     this.cols = cols;
     this.screenWidth = this.rows*tile_size;
     this.screenHeight = this.cols*tile_size; 
+    this.map = new TileStack[maxWorldRow*maxWorldCol];
+    for (int i = 0; i < this.map.length; i++) this.map[i] = new TileStack();
 
     frames = new BufferedImage[sprite_rows][sprite_cols];
-    map = new int[maxWorldRow*maxWorldCol];
 
     try {
       this.sprite_sheet = ImageIO.read(getClass().getResourceAsStream(sprite_path));
@@ -65,17 +71,21 @@ public class GameMap {
 
     for (int r = startRow; r < endRow; r++) {
       for (int c = startCol; c < endCol; c++) {
-
-        int texture = map[r*maxWorldCol + c];
         int screenX = c * tile_size - player.getX() + player.getScreenX();
         int screenY = r * tile_size - player.getY() + player.getScreenY();
+        int index = r*maxWorldCol + c;
 
-        g2.drawImage(
-          frames[texture/sprite_cols][texture%sprite_cols],
-          screenX,
-          screenY,
-          null
-        );
+        int[] tile_ids = map[index].getTileIDs();
+
+        for (int i = tile_ids.length-1; i >= 0; i--) {
+          int id = tile_ids[i];
+          g2.drawImage(
+            frames[id/sprite_cols][id%sprite_cols],
+            screenX,
+            screenY,
+            null
+          );
+        }
       }
     }
   }
@@ -88,14 +98,17 @@ public class GameMap {
       throw new RuntimeException("Map file not found");
     }
 
-    int r = 0;
-    try (Scanner reader = new Scanner(in)) {
-      while (reader.hasNextLine()) {
-        String[] line = (reader.nextLine()).split(",");
-        for (int c = 0; c < maxWorldCol; c++) {
-          map[c + r*maxWorldCol] = Integer.parseInt(line[c]);
-        }
-        r++;
+    Gson gson = new Gson();
+    try (InputStreamReader reader = new InputStreamReader(in)) {
+      mapdata = gson.fromJson(reader, MapData.class);
+    } catch(IOException e) {
+      e.printStackTrace();
+    }
+
+    for (Layer layer : mapdata.layers) {
+      for (Tile tile : layer.tiles) {
+        int index = mapdata.mapWidth*tile.row + tile.col;
+        map[index].addTileID(tile.id);
       }
     }
   }
