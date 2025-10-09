@@ -28,7 +28,7 @@ public class Player extends Entity {
     this.height = height;
     screenX = width/2 - (frame_size*scale)/2;
     screenY = height/2 - (frame_size*scale)/2;
-    hitBox = new Rectangle(8, 5, 48, 54);
+    hitBox = new Rectangle(10, 8, 44, 48);
     parseSheet();
   }
 

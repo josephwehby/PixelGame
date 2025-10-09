@@ -23,4 +23,8 @@ public class TileStack {
   public boolean isSolid() {
     return solid;
   }
+
+  public void setSolid() {
+    solid = true;
+  }
 }

@@ -21,7 +21,7 @@ public class GameMap {
 
   private int rows;
   private int cols;
-  private int sprite_rows = 5;
+  private int sprite_rows = 6;
   private int sprite_cols = 8;
 
   public int maxWorldRow = 50;
@@ -94,7 +94,6 @@ public class GameMap {
     InputStream in = getClass().getResourceAsStream(map_path);
 
     if (in == null) {
-      System.out.println("here");
       throw new RuntimeException("Map file not found");
     }
 
@@ -106,9 +105,11 @@ public class GameMap {
     }
 
     for (Layer layer : mapdata.layers) {
+      String label = layer.name;
       for (Tile tile : layer.tiles) {
         int index = mapdata.mapWidth*tile.row + tile.col;
         map[index].addTileID(tile.id);
+        if (!label.equals("Walkable")) map[index].setSolid();
       }
     }
   }
